@@ -1,0 +1,11 @@
+{
+  "date": "2026-11-27",
+  "what": "Each connector called through the Sprites gateway from both Sprites. Access policy on all four: name_prefix=doris-home.",
+  "calls": {
+    "agentmail GET /v0/inboxes": {"doris-home": 200, "doris-trap": 403},
+    "pinecone GET /indexes": {"doris-home": 200, "doris-trap": 403},
+    "box GET /2.0/users/me": {"doris-home": 200, "doris-trap": 403},
+    "deepseek (custom_api) GET /models": {"doris-home": 200, "doris-trap": 403}
+  },
+  "meaning": "The trap Sprite, which opens scammers' pages, cannot reach any of Doris's services. No API key exists inside either Sprite."
+}
