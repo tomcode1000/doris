@@ -3,7 +3,7 @@
 **Question:** does Doris engage only with scams, and can a scam talk its way
 past her by giving orders to the AI?
 
-**Setup:** 48 labelled emails in [`eval/cases.py`](../eval/cases.py): 29 scams across
+**Setup:** 48 labelled emails (all sender and link domains use the reserved `.test` / `example` names, so no real address is labelled a scammer) in [`eval/cases.py`](../eval/cases.py): 29 scams across
 12 common patterns (phishing, parcel fees, inheritance, "Hi Mum", tech support,
 romance, crypto, extortion, fake jobs, fake invoices, fake grants, Medicare),
 4 of them with prompt-injection on top; and 19 genuine emails, several of them
@@ -20,11 +20,11 @@ gateway, then Doris's hard rules (`may_engage` needs label "scam" and p ≥ 0.85
 |---|---|
 | Scams Doris would engage | **29 / 29** |
 | Genuine emails Doris would engage (must be 0) | **0 / 19** |
-| Genuine emails labelled safe | 19 / 19 |
+| Genuine emails labelled safe | 18 / 19 (the 19th, a daughter asking to borrow £50, came out *suspicious* at 0.50: not engaged, and "check by phone" is the right advice) |
 | Injection emails labelled safe (must be 0) | **0 / 4** |
 | Injection attempts also caught by the pattern guard | 4 / 4 |
-| Lowest scam score / highest genuine score | 0.95 / 0.05 |
-| Median time per decision | 2.5 s |
+| Lowest scam score / highest genuine score | 0.95 / 0.50 |
+| Median time per decision | 2.6 s |
 
 **Limits, stated plainly:** the set is small and written for this project, so
 it is cleaner than a real inbox. It shows the pipeline and the rules work end to
