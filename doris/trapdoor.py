@@ -27,7 +27,7 @@ def inspect(url: str, canary: tuple[str, str] | None = None, call=gateway.call,
             return call("trapdoor", "POST", "/inspect", body, timeout=150)
         except gateway.GatewayError as e:
             last = e
-            if e.status not in (0, 429, 502, 503, 504):
+            if e.status not in (429, 502, 503, 504):
                 break
             time.sleep(wait * (attempt + 1))  # trap is busy or still rewinding
     return {"input_url": url, "error": f"trap unavailable: {last}"[:200]}

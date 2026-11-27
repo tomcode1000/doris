@@ -272,3 +272,13 @@ def test_report_payload_shape():
     assert seen["path"] == "/report/urls"
     assert seen["body"] == {"email": DORIS, "urls": [{"url": "https://scam.test/login",
                                                       "reason": "asks for password"}]}
+
+
+def test_trapdoor_unconfigured_fails_fast():
+    n = {"i": 0}
+
+    def call(*a, **k):
+        n["i"] += 1
+        raise gateway.GatewayError(0, "connector for trapdoor not configured")
+    r = trapdoor.inspect("https://x.test/", call=call, wait=5)
+    assert "error" in r and n["i"] == 1

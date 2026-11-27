@@ -15,7 +15,7 @@ import urllib.request
 GATEWAY = "https://api.sprites.dev/v1/gateway"
 
 CONNECTORS = {
-    "agentmail": os.environ.get("DORIS_AGENTMAIL", "agentmail/uKGJ4zxjSFeUIrZ0-808Pw"),
+    "agentmail": os.environ.get("DORIS_AGENTMAIL", "agentmail/Z-qKSX_PzzNud4FO3iIvXA"),
     "deepseek": os.environ.get("DORIS_DEEPSEEK", "custom_api/VRPrYkHmKZ6HILznRLwLBw"),
     "pinecone": os.environ.get("DORIS_PINECONE", "pinecone/12xSl_vx05vXPfaFy5feMg"),
     "box": os.environ.get("DORIS_BOX", "box/6XfQ8yQYDbdfhV2kgsmKoA"),
