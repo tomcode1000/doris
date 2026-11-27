@@ -176,7 +176,8 @@ def _open_thread(d: Deps, st: State, lg: Ledger, scammer: str, subject: str, tex
     st.d["threads"][scammer] = t
     lg.append("case_opened", {"case": case_id, "kind": t["kind"], "p_scam": verdict.p_scam,
                               "reasons": verdict.reasons}, at=now)
-    st.diary(now, "case", f"New case: a {str(t['kind']).replace('_', ' ')} scam. "
+    kind = str(t["kind"] or "other").replace("_", " ")
+    st.diary(now, "case", f"New case: {'an' if kind[:1] in 'aeiou' else 'a'} {kind} scam. "
              f"Why I'm sure: {'; '.join(verdict.reasons[:3])}.", case=case_id)
     return t
 

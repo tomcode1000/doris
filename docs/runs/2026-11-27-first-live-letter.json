@@ -1,0 +1,42 @@
+{
+ "date": "2026-11-27",
+ "what": "First live end-to-end run. Doris's spare test inbox (traptep@) sent an advance-fee scam to doris.pemberton@. doris-home polled AgentMail through the connector, judged it with DeepSeek through the connector, opened a case and replied in character.",
+ "simulated": "The 'scammer' is our own test inbox; everything else (mail, model, Sprite) is real.",
+ "last_cycle": {
+  "family": 0,
+  "doris": 1,
+  "errors": 0
+ },
+ "stats": {
+  "scams_forwarded": 0,
+  "not_scams": 0,
+  "doris_letters": 1,
+  "scammer_replies": 0,
+  "traps_visited": 0,
+  "reported": 0,
+  "cloaked": 0,
+  "canaries_tripped": 0,
+  "injections_caught": 0,
+  "scammer_minutes": 0
+ },
+ "ledger": {
+  "entries": 3,
+  "head": "464d196d5a2c79913b6388bd12ec3ce35431b0532ce86a13e178241b54c2d1b8",
+  "intact": true
+ },
+ "diary": [
+  {
+   "at": "2026-11-27T16:42:04+00:00",
+   "kind": "letter",
+   "text": "Dear Barrister James,\n\nWell that's a surprise, I didn't know I had a relative with that sort of money. Reg would've said it's too good to be true, but Reg always was a worrier. Which relative was it, dear? I've got a cousin in the village but we don't speak.\n\nNow you'll have to forgive me, I'm not much good with these things. What is it you need again? You mentioned something about apples — is that from the greengrocer? And Maureen has my card, she's got it in her purse for the bingo. I'll have a rummage for my glasses.\n\nCould you explain it once more, slowly? I don't want to get it wrong.\n\nLo",
+   "case": "case-0001",
+   "source": "model"
+  },
+  {
+   "at": "2026-11-27T16:42:04+00:00",
+   "kind": "case",
+   "text": "New case: a advance fee scam. Why I'm sure: Claims an unclaimed inheritance from a late relative; Asks for bank details and a processing fee; Requests payment via Apple gift cards, a common scam tactic.",
+   "case": "case-0001"
+  }
+ ]
+}

@@ -282,3 +282,11 @@ def test_trapdoor_unconfigured_fails_fast():
         raise gateway.GatewayError(0, "connector for trapdoor not configured")
     r = trapdoor.inspect("https://x.test/", call=call, wait=5)
     assert "error" in r and n["i"] == 1
+
+
+def test_diary_grammar_an_before_vowel(env):
+    w = World(verdict='{"label":"scam","p_scam":0.99,"kind":"advance_fee","reasons":["gift cards"]}')
+    w.to_doris("m1", "prince@inheritance.test", "send gift cards", subject="Inheritance")
+    run(w, env)
+    st, _ = env
+    assert any(e["text"].startswith("New case: an advance fee scam") for e in st.d["diary"])
