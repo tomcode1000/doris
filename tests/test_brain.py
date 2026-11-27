@@ -235,7 +235,9 @@ def test_trapdoor_refuses_unsafe_links_without_calling():
 def test_trapdoor_retries_while_trap_rewinds():
     n = {"i": 0}
 
-    def call(*a, **k):
+    def call(service, method, path, *a, **k):
+        if path == "/health":
+            return {"dirty": False, "busy": False}
         n["i"] += 1
         if n["i"] < 3:
             raise gateway.GatewayError(503, "rewinding")
@@ -245,7 +247,9 @@ def test_trapdoor_retries_while_trap_rewinds():
 
 
 def test_trapdoor_gives_up_on_auth_error():
-    def call(*a, **k):
+    def call(service, method, path, *a, **k):
+        if path == "/health":
+            return {"dirty": False, "busy": False}
         raise gateway.GatewayError(401, "no")
     r = trapdoor.inspect("https://x.test/", call=call, wait=0)
     assert "error" in r
@@ -277,10 +281,16 @@ def test_report_payload_shape():
 def test_trapdoor_unconfigured_fails_fast():
     n = {"i": 0}
 
-    def call(*a, **k):
+    def call(service, method, path, *a, **k):
         n["i"] += 1
         raise gateway.GatewayError(0, "connector for trapdoor not configured")
-    r = trapdoor.inspect("https://x.test/", call=call, wait=5)
+    import doris.trapdoor as td
+    orig = td.wait_until_clean
+    td.wait_until_clean = lambda call: False
+    try:
+        r = trapdoor.inspect("https://x.test/", call=call, wait=5)
+    finally:
+        td.wait_until_clean = orig
     assert "error" in r and n["i"] == 1
 
 
@@ -290,3 +300,22 @@ def test_diary_grammar_an_before_vowel(env):
     run(w, env)
     st, _ = env
     assert any(e["text"].startswith("New case: an advance fee scam") for e in st.d["diary"])
+
+
+def test_wait_until_clean_polls_health_until_rewound():
+    states = iter([gateway.GatewayError(502, "waking"), {"dirty": True, "busy": True},
+                   {"dirty": False, "busy": False}])
+
+    def call(service, method, path, *a, **k):
+        x = next(states)
+        if isinstance(x, Exception):
+            raise x
+        return x
+    slept = []
+    assert trapdoor.wait_until_clean(call, every=10, sleep=slept.append)
+    assert slept == [10, 10]
+
+
+def test_wait_until_clean_gives_up():
+    assert not trapdoor.wait_until_clean(lambda *a, **k: {"dirty": True}, every=10, limit=30,
+                                         sleep=lambda s: None)

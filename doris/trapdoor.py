@@ -13,6 +13,23 @@ from . import gateway
 from .rules import link_policy
 
 
+def wait_until_clean(call=gateway.call, every: float = 10, limit: float = 300,
+                     sleep=time.sleep) -> bool:
+    """The trap rewinds itself after every visit, which can take a minute or
+    two. Ask its /health until it is clean rather than knocking and failing."""
+    waited = 0.0
+    while waited <= limit:
+        try:
+            h = call("trapdoor", "GET", "/health", timeout=30)
+            if not h.get("dirty") and not h.get("busy"):
+                return True
+        except gateway.GatewayError:
+            pass  # waking up or mid-rewind
+        sleep(every)
+        waited += every
+    return False
+
+
 def inspect(url: str, canary: tuple[str, str] | None = None, call=gateway.call,
             retries: int = 3, wait: float = 10) -> dict:
     action, why = link_policy(url)
@@ -21,6 +38,7 @@ def inspect(url: str, canary: tuple[str, str] | None = None, call=gateway.call,
     if action == "record_only":
         return {"input_url": url, "skipped": why, "download": True}
     body = {"url": url, "canary": list(canary) if canary else None}
+    wait_until_clean(call)
     last = None
     for attempt in range(retries):
         try:
