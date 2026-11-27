@@ -1,0 +1,19 @@
+name: Heartbeat
+
+# A Sprite sleeps (for free) when nothing is happening, and has no clock of its
+# own. Fly's AgentMail connector polls rather than pushing webhooks, so this
+# rings Doris's /wake bell every 10 minutes: the Sprite wakes, checks both
+# inboxes once, and goes back to sleep.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsS -m 60 -X POST https://doris-home-b62pz.sprites.app/wake
