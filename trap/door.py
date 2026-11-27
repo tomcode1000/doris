@@ -61,12 +61,54 @@ def clean_checkpoint_id(listing: str) -> str | None:
     return best[1] if best else None
 
 
-def rewind() -> None:
-    listing = subprocess.run(["sprite-env", "checkpoints", "list"], capture_output=True,
-                             text=True, timeout=30).stdout
-    cp = clean_checkpoint_id(listing)
+SOCK = "/.sprite/api.sock"
+
+
+def _sock(method: str, path: str, timeout: int = 30) -> str:
+    """Talk to this Sprite's own management socket. stdin is closed: the
+    sprite-env helper hangs waiting on it when run from a service."""
+    return subprocess.run(["curl", "-s", "-m", str(timeout), "-X", method, "--unix-socket", SOCK,
+                           f"http://sprite{path}"], capture_output=True, text=True,
+                          stdin=subprocess.DEVNULL, timeout=timeout + 5).stdout
+
+
+DIRTY = HERE / "DIRTY"  # never in the clean checkpoint: only a real rewind removes it
+
+
+def rewind(sock=_sock) -> str | None:
+    cp = clean_checkpoint_id(sock("GET", "/v1/checkpoints"))
     if cp:
-        subprocess.Popen(["sprite-env", "checkpoints", "restore", cp])
+        sock("POST", f"/v1/checkpoints/{cp}/restore", 60)
+    return cp
+
+
+def rewind_until_clean(sock=_sock, attempts: int = 6, wait: float = 20, sleep=None) -> bool:
+    """Keep asking for a rewind; Fly's restore call sometimes hangs. Returns
+    True once a request went through (the Sprite then restarts clean)."""
+    import time
+    sleep = sleep or time.sleep
+    for _ in range(attempts):
+        try:
+            out = sock("POST", "/v1/checkpoints/" + (clean_checkpoint_id(
+                sock("GET", "/v1/checkpoints")) or "none") + "/restore", 60)
+            if '"accepted"' in out or "Restore initiated" in out:
+                return True
+        except subprocess.TimeoutExpired:
+            pass
+        sleep(wait)
+    return False
+
+
+def watchdog(check_every: float = 60, sleep=None, rounds=None) -> None:
+    """If the trap stays dirty (crash, restart, a dropped call), keep rewinding."""
+    import time
+    sleep = sleep or time.sleep
+    n = 0
+    while rounds is None or n < rounds:
+        n += 1
+        sleep(check_every)
+        if DIRTY.exists():
+            rewind_until_clean(attempts=1)
 
 
 class Door(BaseHTTPRequestHandler):
@@ -86,7 +128,7 @@ class Door(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == "/health":
-            return self._send(200, {"ok": True, "busy": BUSY.locked()})
+            return self._send(200, {"ok": True, "busy": BUSY.locked(), "dirty": DIRTY.exists()})
         self._send(404, {"error": "not found"})
 
     def do_POST(self):
@@ -103,8 +145,9 @@ class Door(BaseHTTPRequestHandler):
             url = str(req["url"])
         except (ValueError, KeyError, TypeError):
             return self._send(400, {"error": "bad json"})
-        if not BUSY.acquire(blocking=False):
+        if DIRTY.exists() or not BUSY.acquire(blocking=False):
             return self._send(429, {"error": "busy"})
+        DIRTY.write_text("visited a scam page; waiting for rewind\n")
         cmd = [PY, INSPECT, url]
         canary = req.get("canary")
         if isinstance(canary, list) and len(canary) == 2:
@@ -119,12 +162,17 @@ class Door(BaseHTTPRequestHandler):
         except subprocess.TimeoutExpired:
             result = {"input_url": url, "error": "timeout"}
         result["rewinding"] = True
-        self._send(200, result)
-        rewind()  # the lock is never released: this Sprite is about to be rewound
+        try:
+            self._send(200, result)
+        except OSError:
+            pass  # caller hung up; the trap must still be rewound
+        finally:
+            rewind_until_clean()  # lock never released: this Sprite is about to be rewound
 
 
 def main() -> None:
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
+    threading.Thread(target=watchdog, daemon=True).start()
     ThreadingHTTPServer(("0.0.0.0", port), Door).serve_forever()
 
 
