@@ -12,8 +12,6 @@ import sys
 import time
 from urllib.parse import urlsplit
 
-from playwright.sync_api import sync_playwright
-
 NAV_TIMEOUT_MS = 20000
 SENSITIVE = {
     "password": ("password", "passwd", "pass", "pin", "passcode"),
@@ -42,6 +40,8 @@ def resolve(host: str) -> list[str]:
 
 
 def main() -> None:
+    from playwright.sync_api import sync_playwright  # only installed in the trap
+
     url = sys.argv[1]
     canary = sys.argv[3:5] if len(sys.argv) >= 5 and sys.argv[2] == "--fill-canary" else None
     out = {"input_url": url, "started_at": time.time(), "redirects": [], "downloads_blocked": []}
