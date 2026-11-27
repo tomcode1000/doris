@@ -103,7 +103,7 @@ def test_link_policy(url, action):
 
 
 def test_defang():
-    assert defang("https://evil.test/a.b") == "hxxps://evil[.]top/a[.]b"
+    assert defang("https://evil.test/a.b") == "hxxps://evil[.]test/a[.]b"
 
 
 from doris.rules import base_domain, may_fill_canary  # noqa: E402
