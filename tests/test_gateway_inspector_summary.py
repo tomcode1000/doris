@@ -57,9 +57,9 @@ def test_gateway_http_error_carries_status(monkeypatch):
 
 
 def test_gateway_unconfigured_connector_refuses(monkeypatch):
-    monkeypatch.setitem(gateway.CONNECTORS, "sprites", "")
+    monkeypatch.setitem(gateway.CONNECTORS, "trapdoor", "")
     with pytest.raises(gateway.GatewayError):
-        gateway.call("sprites", "POST", "/v1/sprites/doris-trap/exec")
+        gateway.call("trapdoor", "POST", "/inspect")
 
 
 def test_no_secrets_in_source():

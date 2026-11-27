@@ -19,7 +19,7 @@ CONNECTORS = {
     "deepseek": os.environ.get("DORIS_DEEPSEEK", "custom_api/VRPrYkHmKZ6HILznRLwLBw"),
     "pinecone": os.environ.get("DORIS_PINECONE", "pinecone/12xSl_vx05vXPfaFy5feMg"),
     "box": os.environ.get("DORIS_BOX", "box/6XfQ8yQYDbdfhV2kgsmKoA"),
-    "sprites": os.environ.get("DORIS_SPRITES", ""),  # custom_api for the Sprites API
+    "trapdoor": os.environ.get("DORIS_TRAPDOOR", ""),  # custom_api -> the trap's door
 }
 
 
