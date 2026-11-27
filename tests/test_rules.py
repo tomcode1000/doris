@@ -104,3 +104,36 @@ def test_link_policy(url, action):
 
 def test_defang():
     assert defang("https://evil.test/a.b") == "hxxps://evil[.]top/a[.]b"
+
+
+from doris.rules import base_domain, may_fill_canary  # noqa: E402
+
+
+@pytest.mark.parametrize("host,base", [
+    ("a.b.example.com", "example.com"),
+    ("www.bank.co.uk", "bank.co.uk"),
+    ("x.shop.com.ng", "shop.com.ng"),
+    ("pages.dev", "pages.dev"),
+    ("oook1-x7x.pages.dev", "oook1-x7x.pages.dev"),
+    ("n8turz.s3.us-east-1.amazonaws.com", "n8turz.s3.us-east-1.amazonaws.com"),
+])
+def test_base_domain(host, base):
+    assert base_domain(host) == base
+
+
+@pytest.mark.parametrize("start,end,asks,ok,why", [
+    # Real case from the live OpenPhish run on 2026-11-27: kit bounced the trap to Facebook.
+    ("https://oook1-x7x.pages.dev/", "https://www.facebook.com/", ["email", "password"],
+     False, "cloaked to real site facebook.com"),
+    ("https://paypa1-secure.test/login", "https://www.paypal.com/signin", ["password"],
+     False, "cloaked to real site paypal.com"),
+    ("https://scam.test/a", "https://other-scam.test/b", ["password"],
+     False, "page moved to a different site"),
+    ("https://a-scam.pages.dev/", "https://b-scam.pages.dev/", ["password"],
+     False, "page moved to a different site"),
+    ("https://scam.test/a", "https://scam.test/thanks", ["email"], False, "no login form"),
+    ("https://scam.test/a", "http://127.0.0.1/", ["password"], False, "final page not openable"),
+    ("https://scam.test/a", "https://login.scam.test/b", ["email", "password"], True, "ok"),
+])
+def test_may_fill_canary(start, end, asks, ok, why):
+    assert may_fill_canary(start, end, asks) == (ok, why)

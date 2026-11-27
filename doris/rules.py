@@ -138,6 +138,54 @@ def link_policy(url: str) -> tuple[str, str]:
     return "open", "ok"
 
 
+# Real brands that phishing kits bounce bots to ("cloaking"). Doris must never
+# type a fake login into these: that would be a login attempt on a real service.
+LEGIT_SITES = (
+    "facebook.com", "instagram.com", "whatsapp.com", "google.com", "gmail.com",
+    "microsoft.com", "live.com", "office.com", "outlook.com", "apple.com", "icloud.com",
+    "paypal.com", "amazon.com", "netflix.com", "roblox.com", "metamask.io", "trezor.io",
+    "ledger.com", "coinbase.com", "binance.com", "dhl.com", "fedex.com", "ups.com",
+    "usps.com", "royalmail.com", "linkedin.com", "x.com", "twitter.com", "yahoo.com",
+)
+_TWO_PART_TLDS = ("co.uk", "org.uk", "ac.uk", "com.ng", "co.za", "com.au", "co.jp", "com.br")
+
+
+# Free hosting where every subdomain is a different owner.
+SHARED_HOSTS = ("pages.dev", "workers.dev", "wasmer.app", "blogspot.com", "amazonaws.com",
+                "github.io", "netlify.app", "vercel.app", "web.app", "firebaseapp.com",
+                "glitch.me", "weebly.com", "wixsite.com", "sprites.app", "fly.dev")
+
+
+def base_domain(host: str) -> str:
+    host = host.lower().strip(".")
+    if any(host.endswith("." + s) for s in SHARED_HOSTS):
+        return host
+    parts = host.split(".")
+    if len(parts) >= 3 and ".".join(parts[-2:]) in _TWO_PART_TLDS:
+        return ".".join(parts[-3:])
+    return ".".join(parts[-2:])
+
+
+def may_fill_canary(input_url: str, final_url: str, asks_for: list[str]) -> tuple[bool, str]:
+    """Fake login goes only into the scam's own page, never a real site."""
+    try:
+        start = urlsplit(input_url).hostname or ""
+        end = urlsplit(final_url).hostname or ""
+    except ValueError:
+        return False, "unparseable"
+    if not start or not end:
+        return False, "no host"
+    if link_policy(final_url)[0] != "open":
+        return False, "final page not openable"
+    if base_domain(end) in LEGIT_SITES:
+        return False, f"cloaked to real site {base_domain(end)}"
+    if base_domain(end) != base_domain(start):
+        return False, "page moved to a different site"
+    if "password" not in asks_for:
+        return False, "no login form"
+    return True, "ok"
+
+
 def defang(url: str) -> str:
     """Make a scam link safe to publish (not clickable)."""
     return url.replace("http", "hxxp", 1).replace(".", "[.]")
