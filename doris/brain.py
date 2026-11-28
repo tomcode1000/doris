@@ -21,6 +21,7 @@ from .judge import judge
 from .ledger import Ledger
 from .redact import redact
 from .rules import Thread, Verdict, defang
+from .evidence import likely_repeat
 from .takedown import worth_reporting
 from .voice import write_reply
 
@@ -42,6 +43,26 @@ class Deps:
     doris_inbox: str
     secret: bytes
     now: Callable[[], datetime] = field(default=lambda: datetime.now(timezone.utc))
+    box: object | None = None  # evidence.Box: files records in Box (optional)
+    campaigns: object | None = None  # evidence.Campaigns: Pinecone memory (optional)
+
+
+def _try(lg: Ledger, what: str, fn, *a):
+    """Optional services never stop Doris; failures go in the ledger."""
+    try:
+        return fn(*a)
+    except Exception as e:  # noqa: BLE001
+        lg.append("service_error", {"service": what, "error": f"{type(e).__name__}: {e}"[:200]})
+        return None
+
+
+def _file_evidence(d: Deps, lg: Ledger, case_id: str, kind: str, record: dict) -> None:
+    if not d.box:
+        return
+    rec = {k: v for k, v in record.items() if k not in ("screenshot_png_b64", "fields")}
+    receipt = _try(lg, "box", d.box.file, case_id, kind, rec, lg.head())
+    if receipt:
+        lg.append("box_filed", {"case": case_id, **receipt})
 
 
 class State:
@@ -153,6 +174,7 @@ def _visit_links(d: Deps, st: State, lg: Ledger, urls: list[str], case_id: str,
             lg.append("reported", {"case": case_id, "url": final, "netcraft": r}, at=now)
             st.diary(now, "report", f"I reported {defang(final)} to Netcraft for takedown ({why}).",
                      case=case_id, netcraft_uuid=r.get("uuid"))
+        _file_evidence(d, lg, case_id, "trap-visit", rec)
         out.append(rec)
     return out
 
@@ -174,6 +196,15 @@ def _open_thread(d: Deps, st: State, lg: Ledger, scammer: str, subject: str, tex
          "canary": {"token": c.token, "email": c.email, "password": c.password},
          "family": family, "last_scammer_at": now.isoformat()}
     st.d["threads"][scammer] = t
+    if d.campaigns:
+        hits = _try(lg, "pinecone", d.campaigns.similar, text) or []
+        rep = likely_repeat(hits, exclude=case_id)
+        if rep:
+            t["campaign_of"] = rep["case"]
+            lg.append("campaign_match", {"case": case_id, "like": rep["case"], "score": rep["score"]}, at=now)
+            st.diary(now, "case", f"This one looks like {rep['case'].replace('case-', 'CASE ')} again "
+                     f"(similarity {rep['score']:.2f}). Same gang, I'd wager.", case=case_id)
+        _try(lg, "pinecone", d.campaigns.add, case_id, text, info.get("kind"))
     lg.append("case_opened", {"case": case_id, "kind": t["kind"], "p_scam": verdict.p_scam,
                               "reasons": verdict.reasons}, at=now)
     kind = str(t["kind"] or "other").replace("_", " ")

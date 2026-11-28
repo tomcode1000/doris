@@ -17,7 +17,7 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from . import brain, llm, mailbox, takedown, trapdoor
+from . import brain, evidence, llm, mailbox, takedown, trapdoor
 from .ledger import Ledger
 
 APP = Path(os.environ.get("DORIS_HOME", "/home/sprite/app"))
@@ -43,7 +43,15 @@ def real_deps() -> brain.Deps:
         mail_reply=mailbox.reply, inspect=trapdoor.inspect,
         report=lambda url, reason, reporter: takedown.report(url, reason, reporter),
         family_inbox=mailbox.FAMILY_INBOX, doris_inbox=mailbox.DORIS_INBOX,
-        secret=canary_secret())
+        secret=canary_secret(), box=evidence.Box(state=_box_state()),
+        campaigns=evidence.Campaigns())
+
+
+_BOX_STATE: dict = {}
+
+
+def _box_state() -> dict:
+    return _BOX_STATE
 
 
 def run_cycle() -> None:
