@@ -142,6 +142,12 @@ class Home(BaseHTTPRequestHandler):
             if time.time() - LAST["at"] > 120:
                 self._wake()
             return self._send(200, json.dumps(public_view()).encode())
+        if path == "/evidence" and not (WEB / "evidence.html").exists():
+            self.send_response(302)  # until the Evidence page is designed and built
+            self.send_header("Location", "https://github.com/tomcode1000/doris/blob/main/docs/EVAL.md")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
         if path == "/api/cases":
             return self._send(200, json.dumps(public_cases()).encode())
         if path in PAGES and (WEB / PAGES[path]).exists():

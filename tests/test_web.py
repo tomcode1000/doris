@@ -102,3 +102,14 @@ def test_every_test_named_on_the_site_exists():
     page = (ROOT / "web" / "how-it-works.html").read_text(encoding="utf-8")
     for path, name in re.findall(r"(tests/\w+\.py)::(\w+)", page):
         assert f"def {name}(" in (ROOT / path).read_text(encoding="utf-8"), name
+
+
+def test_evidence_redirects_until_page_exists(site):
+    h = FakeHandler("/evidence")
+    headers = {}
+    h.send_header = lambda k, v: headers.__setitem__(k, v)
+    h.do_GET()
+    if (ROOT / "web" / "evidence.html").exists():
+        assert h.sent == 200
+    else:
+        assert h.sent == 302 and headers["Location"].endswith("docs/EVAL.md")
