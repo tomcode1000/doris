@@ -89,7 +89,7 @@ img { max-width: 100%; display: block; }
 .hero-grid:has(> :only-child) .lede { max-width: 62ch; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
 .portrait { margin: 0; }
-.portrait img { width: 100%; aspect-ratio: 4 / 3.3; object-fit: cover; border-radius: var(--r-lg); }
+.portrait img { width: 100%; height: auto; aspect-ratio: 968 / 420; object-fit: cover; border-radius: var(--r-lg); }
 .portrait figcaption { font-size: 12.5px; color: var(--ink-3); margin-top: 10px; }
 
 /* ---------- live strip ---------- */

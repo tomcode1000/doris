@@ -8,3 +8,7 @@ report.xml
 state/
 *.local.json
 docs/ref/
+
+# voiceover: keep the guide track, subtitles and cue sheet; per-cue audio is regenerated
+video/vo/*.raw.mp3
+video/vo/[0-9]*.mp3

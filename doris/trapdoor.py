@@ -13,7 +13,7 @@ from . import gateway
 from .rules import link_policy
 
 
-def wait_until_clean(call=gateway.call, every: float = 10, limit: float = 300,
+def wait_until_clean(call=gateway.call, every: float = 10, limit: float = 90,
                      sleep=time.sleep) -> bool:
     """The trap rewinds itself after every visit, which can take a minute or
     two. Ask its /health until it is clean rather than knocking and failing."""
@@ -38,7 +38,9 @@ def inspect(url: str, canary: tuple[str, str] | None = None, call=gateway.call,
     if action == "record_only":
         return {"input_url": url, "skipped": why, "download": True}
     body = {"url": url, "canary": list(canary) if canary else None}
-    wait_until_clean(call)
+    if not wait_until_clean(call):
+        # Never let a stuck trap freeze Doris: skip this link, she carries on.
+        return {"input_url": url, "error": "trap still rewinding; link not opened"}
     last = None
     for attempt in range(retries):
         try:

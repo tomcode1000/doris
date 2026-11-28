@@ -286,7 +286,7 @@ def test_trapdoor_unconfigured_fails_fast():
         raise gateway.GatewayError(0, "connector for trapdoor not configured")
     import doris.trapdoor as td
     orig = td.wait_until_clean
-    td.wait_until_clean = lambda call: False
+    td.wait_until_clean = lambda call: True  # trap is clean; the connector itself is missing
     try:
         r = trapdoor.inspect("https://x.test/", call=call, wait=5)
     finally:
@@ -319,3 +319,15 @@ def test_wait_until_clean_polls_health_until_rewound():
 def test_wait_until_clean_gives_up():
     assert not trapdoor.wait_until_clean(lambda *a, **k: {"dirty": True}, every=10, limit=30,
                                          sleep=lambda s: None)
+
+
+def test_stuck_trap_is_skipped_not_waited_on():
+    import doris.trapdoor as td
+    orig = td.wait_until_clean
+    td.wait_until_clean = lambda call: False
+    calls = []
+    try:
+        r = td.inspect("https://x.test/", call=lambda *a, **k: calls.append(a))
+    finally:
+        td.wait_until_clean = orig
+    assert "error" in r and "rewinding" in r["error"] and calls == []

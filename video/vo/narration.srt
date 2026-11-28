@@ -1,0 +1,51 @@
+1
+00:00:00,500 --> 00:00:07,005
+Every year, older people lose billions to email scams. Their children usually find out afterwards.
+
+2
+00:00:08,000 --> 00:00:14,583
+Meet Doris. A fictional eighty-one-year-old, run by an AI agent on Fly dot io Sprites.
+
+3
+00:00:16,000 --> 00:00:22,374
+Forward her a scam, and she tells you, in plain words, whether it is one. Then she deals with them herself.
+
+4
+00:00:26,000 --> 00:00:40,106
+DORIS: Dear Barrister James, well that's a surprise. I didn't know I had a relative with that sort of money. Reg would've said it's too good to be true, but Reg always was a worrier. Which relative was it, dear?
+
+5
+00:00:44,000 --> 00:00:50,792
+She writes from her own address. Slow, kind, endless questions. Your family never appears.
+
+6
+00:00:53,000 --> 00:00:59,713
+Every case is on the record. Scammer text is untrusted, links are made unclickable, and every step is hash-chained.
+
+7
+00:01:04,000 --> 00:01:12,098
+When a scammer sends a link, it opens in a second Sprite: a throwaway computer that rewinds itself to a clean snapshot after every visit.
+
+8
+00:01:16,000 --> 00:01:23,367
+It holds no keys. Every one of Doris's services refuses it. Her home gets through; the trap gets four hundred and three.
+
+9
+00:01:28,000 --> 00:01:38,501
+Keys live only in Sprites connectors: AgentMail for her inbox, DeepSeek for her judgement and her voice, Box for the evidence, Pinecone to spot a repeat campaign.
+
+10
+00:01:42,000 --> 00:01:51,169
+Measured: twenty-nine of twenty-nine scams engaged. None of nineteen genuine emails. And an email that gives orders to the AI is never judged safe.
+
+11
+00:01:56,000 --> 00:02:03,393
+Daisy, the phone granny, talked to scammers. Doris clicks their links, keeps the evidence, and never sends a penny.
+
+12
+00:02:06,000 --> 00:02:09,892
+DORIS: Go on then, dear. Try to scam me.
+
+13
+00:02:10,392 --> 00:02:13,736
+Doris. Built on Fly dot io Sprites.
