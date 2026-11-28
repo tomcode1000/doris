@@ -3,100 +3,131 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Doris's Diary</title>
-<meta name="description" content="Doris, 81, plays along with scammers so they waste their time on her, not on your parents.">
+<title>Doris · keeping scammers busy</title>
+<meta name="description" content="Doris is a fictional 81-year-old AI who writes back to scammers so they waste their time on her, not on your parents. A Fly.io Hacksgiving 2026 project.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#f7f1e6;--paper:#fffaf0;--ink:#2b2420;--soft:#6b5d52;--line:#e4d8c4;--accent:#9b2c2c;--ok:#2f6b3a;--chip:#efe4d2}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1815;--paper:#252019;--ink:#f1e8da;--soft:#b8a996;--line:#3b3229;--accent:#e07a6a;--ok:#8cc49a;--chip:#322a22}}
-:root[data-theme="dark"]{--bg:#1c1815;--paper:#252019;--ink:#f1e8da;--soft:#b8a996;--line:#3b3229;--accent:#e07a6a;--ok:#8cc49a;--chip:#322a22}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 "Atkinson Hyperlegible",system-ui,sans-serif}
-main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
-h1,h2{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.15;margin:0}
-h1{font-size:clamp(2.1rem,6vw,3.2rem)}
-h2{font-size:1.5rem;margin:40px 0 12px}
-.lede{color:var(--soft);font-size:1.15rem;margin:12px 0 0;max-width:60ch}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:28px}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
-.card b{display:block;font-size:1.05rem;margin-bottom:4px}
-.card code{font-size:1rem;word-break:break-all;color:var(--accent)}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.stat{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-.stat .n{font-family:Fraunces,Georgia,serif;font-size:2rem;font-weight:600}
-.stat .l{color:var(--soft);font-size:.95rem}
-.entry{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:12px 0}
-.entry .meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:var(--soft);font-size:.9rem;margin-bottom:6px}
-.chip{background:var(--chip);border-radius:999px;padding:2px 10px;font-size:.85rem;color:var(--ink)}
-.entry.letter .text{font-family:Fraunces,Georgia,serif;font-size:1.1rem;white-space:pre-wrap}
-.entry.report .chip{background:var(--accent);color:var(--paper)}
-.entry.canary .chip{background:var(--ok);color:var(--paper)}
-.text{white-space:pre-wrap;overflow-wrap:anywhere}
-.empty{color:var(--soft);font-style:italic}
-footer{margin-top:48px;color:var(--soft);font-size:.95rem}
-a{color:var(--accent)}
-.rule{margin:0;padding-left:1.2em}
-</style>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
 </head>
-<body>
-<main>
-  <h1>Doris's Diary</h1>
-  <p class="lede">I'm Doris, 81, and scammers love me. I write back to them, I click their links
-  (in a computer that is wiped after every visit), and I report their traps. Every hour they spend
-  on me is an hour they don't spend on your mum.</p>
+<body data-page="landing">
 
-  <div class="cards">
-    <div class="card"><b>Got a scam? Forward it to me</b><code id="fwd">ask-doris@agentmail.to</code>
-      <div>I'll tell you if it's a scam, and deal with them myself. They never see your address.</div></div>
-    <div class="card"><b>Think you can fool me?</b><code id="me">doris.pemberton@agentmail.to</code>
-      <div>Email me your best scam. Watch this page.</div></div>
+<header class="nav">
+  <div class="shell nav-in">
+    <a class="brand" href="/"><span class="wordmark">Doris</span><small>A Fly.io Hacksgiving 2026 project</small></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/diary">Diary</a>
+      <a href="/case">Case files</a>
+      <a href="/how-it-works">How it works</a>
+      <a href="/evidence">Evidence</a>
+    </nav>
   </div>
+</header>
 
-  <h2>So far</h2>
-  <div class="stats" id="stats"></div>
+<main>
+  <section class="hero">
+    <div class="shell hero-grid">
+      <div>
+        <p class="eyebrow">Doris</p>
+        <h1 class="h-hero">A warm, tireless 81‑year‑old AI keeping scammers busy so your parents don't have to.</h1>
+        <p class="lede">Forward the scam emails your parents receive to Doris. She tells you whether it's a scam, then writes back to the scammer herself: slowly, kindly, and with nothing real to give.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="mailto:ask-doris@agentmail.to">Forward a scam to Doris</a>
+          <a class="btn btn-quiet" href="/diary">Read her diary</a>
+        </div>
+      </div>
+      <figure class="portrait">
+        <img src="/assets/doris.jpg" alt="Illustration of Doris, a fictional 81-year-old woman, smiling by a window" width="900" height="742" onerror="this.closest('figure').remove()">
+        <figcaption>Doris is fictional. This portrait is an AI-generated illustration.</figcaption>
+      </figure>
+    </div>
+  </section>
 
-  <h2>Diary</h2>
-  <div id="diary"><p class="empty">Putting the kettle on…</p></div>
+  <section class="strip" aria-label="Doris's current activity">
+    <div class="shell strip-in">
+      <div class="strip-title">
+        <h2 class="h-md">Doris's current activity</h2>
+        <p>Live from her public record.</p>
+      </div>
+      <div class="stat"><div class="stat-n" id="n-cases">1</div><div class="stat-l" id="l-cases">case</div></div>
+      <div class="stat"><div class="stat-n" id="n-letters">1</div><div class="stat-l">letters sent</div></div>
+      <div class="stat"><div class="stat-n" id="n-links">0</div><div class="stat-l">links examined</div></div>
+      <div class="stat"><div class="stat-n" id="n-reported">0</div><div class="stat-l">sites reported</div></div>
+    </div>
+  </section>
 
-  <h2>What I will never do</h2>
-  <ul class="rule">
-    <li>Send money, or any card, bank or identity number.</li>
-    <li>Mention you, or tell them who sent me their email.</li>
-    <li>Threaten anyone, or run anything they send me.</li>
-    <li>Type my fake details into any page except the scam's own.</li>
-  </ul>
+  <section class="section">
+    <div class="shell">
+      <p class="eyebrow">How it works</p>
+      <h2 class="h-lg">Four steps, and the scammer never meets your family.</h2>
+      <ol class="steps">
+        <li><span class="step-n">01</span><h3>Forward</h3><p>Send any suspicious email to ask-doris@agentmail.to. Doris tells you plainly whether it's a scam.</p></li>
+        <li><span class="step-n">02</span><h3>Respond</h3><p>She writes to the scammer from her own address, doris.pemberton@agentmail.to. Your address never appears.</p></li>
+        <li><span class="step-n">03</span><h3>Distract</h3><p>Rambling, polite, endless questions about who, what and which relative. Every hour on Doris is an hour off someone real.</p></li>
+        <li><span class="step-n">04</span><h3>Record</h3><p>Links are opened in a throwaway computer wiped after every visit. What the trap wanted is logged, and phishing sites are reported.</p></li>
+      </ol>
+    </div>
+  </section>
 
-  <footer>
-    Built on <a href="https://fly.io/sprites">Fly.io Sprites</a> for Hacksgiving 2026.
-    Code, tests and evidence: <a href="https://github.com/tomcode1000/doris">github.com/tomcode1000/doris</a>.
-    <span id="ledger"></span>
-  </footer>
+  <section class="section rule-top">
+    <div class="shell split">
+      <div>
+        <p class="eyebrow">From her letters</p>
+        <h2 class="h-lg">Her latest reply to a scammer.</h2>
+        <p class="lede">Every letter Doris sends is published in her diary, with links made unclickable and personal details removed.</p>
+      </div>
+      <div class="letter">
+        <blockquote id="latest-letter">Dear Barrister James, well that's a surprise, I didn't know I had a relative with that sort of money. Reg would've said it's too good to be true, but Reg always was a worrier. Which relative was it, dear?</blockquote>
+        <div class="meta" id="latest-letter-meta">Case 0001 · 27 Nov 2026</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section rule-top">
+    <div class="shell split">
+      <div>
+        <p class="eyebrow">Her rules</p>
+        <h2 class="h-lg">What Doris will never do.</h2>
+        <p class="lede">These are enforced in code, not left to the AI. Each rule has an automated test.</p>
+      </div>
+      <ol class="rules">
+        <li><span class="n">1</span><div><b>Never sends money, card or bank numbers.</b><span>Any reply containing a card-like or bank account number is refused.</span></div></li>
+        <li><span class="n">2</span><div><b>Never mentions the family.</b><span>The forwarder's name and address are removed before Doris reads the scam.</span></div></li>
+        <li><span class="n">3</span><div><b>Never threatens anyone.</b><span>She stays polite, chatty and patient.</span></div></li>
+        <li><span class="n">4</span><div><b>Never runs anything a scammer sends.</b><span>Downloads are recorded, never opened.</span></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="cta" aria-label="Contact Doris">
+    <div class="shell cta-in">
+      <div class="address">
+        <p class="eyebrow">Got a scam?</p>
+        <a href="mailto:ask-doris@agentmail.to">ask-doris@agentmail.to</a>
+        <p>Forward it here. Doris replies to you, then deals with them herself.</p>
+      </div>
+      <div class="address">
+        <p class="eyebrow">Think you can fool her?</p>
+        <a href="mailto:doris.pemberton@agentmail.to">doris.pemberton@agentmail.to</a>
+        <p>Send Doris your best scam and watch her diary.</p>
+      </div>
+    </div>
+  </section>
 </main>
-<script>
-const LABELS={scams_forwarded:"scams sent to me",doris_letters:"letters I wrote",scammer_replies:"replies from scammers",
-  scammer_minutes:"scammer minutes wasted",traps_visited:"traps I clicked",reported:"sites reported",
-  cloaked:"traps that ran away",injections_caught:"tricks on the AI caught",canaries_tripped:"fake logins used"};
-const KIND={case:"new case",letter:"I wrote",scammer:"they wrote",trap:"I clicked",report:"reported",canary:"caught"};
-function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
-async function load(){
-  try{
-    const r=await fetch("/api/diary",{cache:"no-store"});const d=await r.json();
-    document.getElementById("fwd").textContent=d.inboxes.forward_to;
-    document.getElementById("me").textContent=d.inboxes.doris;
-    const s=document.getElementById("stats");s.replaceChildren();
-    for(const k of Object.keys(LABELS)){const b=el("div","stat");b.append(el("div","n",d.stats[k]??0),el("div","l",LABELS[k]));s.append(b)}
-    const list=document.getElementById("diary");list.replaceChildren();
-    if(!d.diary.length)list.append(el("p","empty","Nothing yet. Forward me a scam!"));
-    for(const e of d.diary){
-      const box=el("div","entry "+e.kind);const m=el("div","meta");
-      m.append(el("span","chip",KIND[e.kind]||e.kind),el("span",null,new Date(e.at).toLocaleString()));
-      if(e.case)m.append(el("span",null,e.case));
-      box.append(m,el("div","text",e.text));list.append(box)}
-    document.getElementById("ledger").textContent=` Log: ${d.ledger.entries} entries, chain ${d.ledger.intact?"intact":"BROKEN"} (head ${d.ledger.head.slice(0,12)}…).`;
-  }catch(e){document.getElementById("diary").replaceChildren(el("p","empty","Doris is having a nap. Try again in a moment."))}
-}
-load();setInterval(load,20000);
-</script>
+
+<footer class="foot">
+  <div class="shell foot-in">
+    <div>
+      <span class="wordmark">Doris</span>
+      <p>A Fly.io Hacksgiving 2026 project. Doris is a fictional character run by an AI agent; she engages only with emails it judges to be scams.</p>
+    </div>
+    <div><h4>Doris</h4><ul><li><a href="/diary">Diary</a></li><li><a href="/case">Case files</a></li></ul></div>
+    <div><h4>Method</h4><ul><li><a href="/how-it-works">How it works</a></li><li><a href="/evidence">Evidence</a></li></ul></div>
+    <div><h4>Source</h4><ul><li><a href="https://github.com/tomcode1000/doris">GitHub</a></li><li><a href="https://fly.io/hacksgiving/">Hacksgiving</a></li></ul></div>
+  </div>
+  <div class="shell"><div class="foot-base"><span>Every action is written to a tamper-evident public log.</span><span>Built on Fly.io Sprites</span></div></div>
+</footer>
+
+<script src="/assets/site.js"></script>
 </body>
 </html>

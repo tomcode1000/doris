@@ -13,8 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 tmp = Path(tempfile.mkdtemp(prefix="doris-preview-"))
 os.environ["DORIS_HOME"] = str(tmp)
-(tmp / "web").mkdir()
-(tmp / "web" / "index.html").write_bytes((ROOT / "web" / "index.html").read_bytes())
+import shutil  # noqa: E402
+shutil.copytree(ROOT / "web", tmp / "web")
 
 from doris import brain, web  # noqa: E402
 from doris.ledger import Ledger  # noqa: E402
@@ -33,7 +33,7 @@ w.to_doris("m3", "prince@inheritance.test", "Send 250 in gift cards https://inhe
            subject="Inheritance")
 brain.cycle(w.deps(), st, lg)
 
-web.STATE, web.WEB = tmp / "state", tmp / "web"
+web.STATE, web.WEB = tmp / "state", ROOT / "web"
 web.LAST["at"] = 9e18  # never trigger real cycles in preview
 print("preview on http://127.0.0.1:8765")
 web.ThreadingHTTPServer(("127.0.0.1", 8765), web.Home).serve_forever()

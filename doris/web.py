@@ -74,6 +74,46 @@ def public_view() -> dict:
             "last_cycle": LAST}
 
 
+def public_cases() -> list[dict]:
+    """Cases for the public site. Scammer addresses are withheld, every text is
+    redacted, links are defanged, and the family is never included."""
+    p = STATE / "state.json"
+    d = json.loads(p.read_text()) if p.exists() else {}
+    by_case: dict[str, list] = {}
+    for e in Ledger(STATE / "ledger.jsonl").entries():
+        cid = (e.get("data") or {}).get("case")
+        if cid:
+            by_case.setdefault(cid, []).append({"at": e["at"], "kind": e["kind"],
+                                                "hash": e["hash"][:10]})
+    out = []
+    for t in d.get("threads", {}).values():
+        history = [{"who": h["who"], "at": h.get("at"),
+                    "text": _clean(h.get("text", ""))} for h in t.get("history", [])]
+        last = history[-1]["who"] if history else None
+        out.append({
+            "case": t["case_id"], "kind": t.get("kind") or "other", "opened_at": t.get("opened_at"),
+            "status": "Doris waiting for a reply" if last == "doris" else "Scammer replied",
+            "letters": t.get("replies_sent", 0),
+            "scammer_replies": sum(1 for h in history[1:] if h["who"] == "scammer"),
+            "history": history, "log": by_case.get(t["case_id"], [])[-20:],
+        })
+    out.sort(key=lambda c: c["case"], reverse=True)
+    return out
+
+
+def _clean(text: str) -> str:
+    import re
+    from .redact import redact
+    from .rules import defang
+    return re.sub(r"https?://\S+", lambda m: defang(m.group(0)), redact(text))[:3000]
+
+
+PAGES = {"/": "index.html", "/index.html": "index.html", "/diary": "diary.html",
+         "/case": "case.html", "/how-it-works": "how-it-works.html", "/evidence": "evidence.html"}
+TYPES = {".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8",
+         ".jpg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".svg": "image/svg+xml"}
+
+
 class Home(BaseHTTPRequestHandler):
     server_version = "doris-home"
 
@@ -102,10 +142,16 @@ class Home(BaseHTTPRequestHandler):
             if time.time() - LAST["at"] > 120:
                 self._wake()
             return self._send(200, json.dumps(public_view()).encode())
-        if path in ("/", "/index.html"):
+        if path == "/api/cases":
+            return self._send(200, json.dumps(public_cases()).encode())
+        if path in PAGES and (WEB / PAGES[path]).exists():
             if time.time() - LAST["at"] > 120:
                 self._wake()
-            return self._send(200, (WEB / "index.html").read_bytes(), "text/html; charset=utf-8")
+            return self._send(200, (WEB / PAGES[path]).read_bytes(), "text/html; charset=utf-8")
+        if path.startswith("/assets/"):
+            f = (WEB / path.lstrip("/")).resolve()
+            if f.is_file() and (WEB / "assets").resolve() in f.parents and f.suffix in TYPES:
+                return self._send(200, f.read_bytes(), TYPES[f.suffix])
         self._send(404, b'{"error":"not found"}')
 
     def do_POST(self):

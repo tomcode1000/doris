@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "label": "tests",
-  "message": "127 passed",
+  "message": "180 passed",
   "color": "brightgreen",
-  "passed": 127,
+  "passed": 180,
   "failed": 0,
   "skipped": 0,
-  "generated_at": "2026-11-27T15:13:09+00:00"
+  "generated_at": "2026-11-28T14:26:52+00:00"
 }

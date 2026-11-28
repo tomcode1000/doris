@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Doris works</title>
+<meta name="description" content="One scam's journey through Doris, where her keys live, and the tests that enforce her rules.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body data-page="how">
+
+<header class="nav">
+  <div class="shell nav-in">
+    <a class="brand" href="/"><span class="wordmark">Doris</span><small>A Fly.io Hacksgiving 2026 project</small></a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/diary">Diary</a>
+      <a href="/case">Case files</a>
+      <a href="/how-it-works" aria-current="page">How it works</a>
+      <a href="/evidence">Evidence</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="shell">
+      <p class="eyebrow">Method</p>
+      <h1 class="h-hero">How Doris works</h1>
+      <p class="lede">One scam's journey, where the keys live, and the automated tests that enforce her rules.</p>
+    </div>
+  </section>
+  <section class="section-tight rule-top">
+    <div class="shell">
+      <h2 class="h-lg">One scam's journey</h2>
+      <ol class="steps seven">
+        <li><span class="step-n">01</span><h3>Forward</h3><p>A family forwards a suspected scam to ask-doris@agentmail.to.</p></li>
+        <li><span class="step-n">02</span><h3>Judge</h3><p>Doris decides whether it is a scam and tells the family in plain words.</p></li>
+        <li><span class="step-n">03</span><h3>Reply</h3><p>She writes to the scammer from her own address, never the family's.</p></li>
+        <li><span class="step-n">04</span><h3>Open</h3><p>Any link is opened in a separate throwaway computer.</p></li>
+        <li><span class="step-n">05</span><h3>Record</h3><p>What the page asked for, and where it really led, is recorded.</p></li>
+        <li><span class="step-n">06</span><h3>Wipe</h3><p>The throwaway computer rewinds itself to a clean snapshot.</p></li>
+        <li><span class="step-n">07</span><h3>Report</h3><p>Confirmed phishing pages are reported for takedown, and everything goes into the public log.</p></li>
+      </ol>
+    </div>
+  </section>
+  <section class="section rule-top">
+    <div class="shell">
+      <p class="eyebrow">Where the keys live</p>
+      <h2 class="h-lg">Two computers, and neither holds a key.</h2>
+      <div class="cols3">
+        <div><h3>In a vault outside both</h3><p>Email, the AI model and storage are reached through Fly.io Sprites connectors. The keys stay in Fly; no key exists inside either computer.</p></div>
+        <div><h3>Doris's home</h3><p>Reads mail, decides and writes letters. Only this computer is allowed to use her connectors.</p></div>
+        <div><h3>The throwaway computer</h3><p>Opens scammers' links in a browser. Every connector refuses it, and it is wiped after every visit. If a page turns nasty, there is nothing there to steal.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section rule-top">
+    <div class="shell split">
+      <div>
+        <p class="eyebrow">Her rules</p>
+        <h2 class="h-lg">What Doris will never do.</h2>
+        <p class="lede">Each rule is code, checked by a named test that runs on every change.</p>
+      </div>
+      <ol class="rules">
+        <li><span class="n">1</span><div><b>Never sends money, card or bank numbers.</b><span>Replies with card-like or bank account numbers are refused.</span><code class="test">tests/test_rules.py::test_outgoing_blocks</code></div></li>
+        <li><span class="n">2</span><div><b>Never mentions the family.</b><span>The forwarder is stripped from the scam and can never reach the scammer or the diary.</span><code class="test">tests/test_brain.py::test_family_identity_never_reaches_scammer_or_diary</code></div></li>
+        <li><span class="n">3</span><div><b>Never threatens anyone.</b><span>Threatening language blocks a reply.</span><code class="test">tests/test_rules.py::test_outgoing_blocks</code></div></li>
+        <li><span class="n">4</span><div><b>Never runs anything a scammer sends.</b><span>Downloads and unsafe addresses never reach the throwaway computer.</span><code class="test">tests/test_brain.py::test_trapdoor_refuses_unsafe_links_without_calling</code></div></li>
+        <li><span class="n">5</span><div><b>Types fake details only into the scam's own page.</b><span>Never into a real site the scam redirects to.</span><code class="test">tests/test_rules.py::test_may_fill_canary</code></div></li>
+        <li><span class="n">6</span><div><b>Never writes to government, university or no-reply addresses.</b><span>A spoofed sender is not a reason to bother a real institution.</span><code class="test">tests/test_rules.py::test_reply_targets</code></div></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-in">
+    <div>
+      <span class="wordmark">Doris</span>
+      <p>A Fly.io Hacksgiving 2026 project. Doris is a fictional character run by an AI agent; she engages only with emails it judges to be scams.</p>
+    </div>
+    <div><h4>Doris</h4><ul><li><a href="/diary">Diary</a></li><li><a href="/case">Case files</a></li></ul></div>
+    <div><h4>Method</h4><ul><li><a href="/how-it-works">How it works</a></li><li><a href="/evidence">Evidence</a></li></ul></div>
+    <div><h4>Source</h4><ul><li><a href="https://github.com/tomcode1000/doris">GitHub</a></li><li><a href="https://fly.io/hacksgiving/">Hacksgiving</a></li></ul></div>
+  </div>
+  <div class="shell"><div class="foot-base"><span>Every action is written to a tamper-evident public log.</span><span>Built on Fly.io Sprites</span></div></div>
+</footer>
+
+<script src="/assets/site.js"></script>
+</body>
+</html>
